@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SetorDetails\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class SetorDetailForm
@@ -13,29 +14,35 @@ class SetorDetailForm
     {
         return $schema
             ->components([
-                Select::make('setor_header_id')
-                    ->relationship('setorHeader', 'id')
-                    ->required(),
-                Select::make('barang_id')
-                    ->relationship('barang', 'id')
-                    ->required(),
-                TextInput::make('jumlah')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('subtotal')
-                    ->required()
-                    ->numeric()
-                    ->default(0.0),
-                Toggle::make('active')
-                    ->required(),
-                TextInput::make('created_by')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                TextInput::make('updated_by')
-                    ->numeric(),
-                TextInput::make('deleted_by')
-                    ->numeric(),
+                Section::make('Detail Setor')
+                    ->schema([
+                        Select::make('setor_header_id')
+                            ->label('Transaksi Setor')
+                            ->relationship('setorHeader', 'kode')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                        Select::make('barang_id')
+                            ->label('Barang')
+                            ->relationship('barang', 'nama')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                        TextInput::make('jumlah')
+                            ->label('Jumlah')
+                            ->required()
+                            ->numeric()
+                            ->minValue(1),
+                        TextInput::make('subtotal')
+                            ->label('Subtotal')
+                            ->required()
+                            ->numeric()
+                            ->prefix('Rp'),
+                        Toggle::make('active')
+                            ->label('Aktif')
+                            ->default(true),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

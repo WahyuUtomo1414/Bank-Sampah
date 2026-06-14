@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\Barangs\Tables;
 
+use App\Filament\Support\AuditTableColumns;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -18,47 +21,53 @@ class BarangsTable
     {
         return $table
             ->columns([
-                TextColumn::make('kategori.id')
+                TextColumn::make('kategori.nama')
+                    ->label('Kategori')
+                    ->badge()
                     ->searchable(),
-                TextColumn::make('unit.id')
+                TextColumn::make('unit.nama')
+                    ->label('Satuan')
+                    ->badge()
                     ->searchable(),
                 TextColumn::make('kode')
+                    ->label('Kode')
                     ->searchable(),
                 TextColumn::make('nama')
+                    ->label('Nama')
                     ->searchable(),
-                TextColumn::make('foto')
-                    ->searchable(),
+                ImageColumn::make('foto')
+                    ->label('Foto')
+                    ->disk('public')
+                    ->circular(),
                 TextColumn::make('harga')
-                    ->numeric()
+                    ->label('Harga')
+                    ->money('IDR')
                     ->sortable(),
                 IconColumn::make('active')
+                    ->label('Aktif')
                     ->boolean(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diubah Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->label('Dihapus Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                ...AuditTableColumns::make(),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

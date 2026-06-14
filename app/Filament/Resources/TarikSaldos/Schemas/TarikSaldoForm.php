@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class TarikSaldoForm
@@ -15,26 +16,31 @@ class TarikSaldoForm
     {
         return $schema
             ->components([
-                Select::make('warga_id')
-                    ->relationship('warga', 'id')
-                    ->required(),
-                TextInput::make('total')
-                    ->required()
-                    ->numeric(),
-                DatePicker::make('tanggal_transaksi')
-                    ->required(),
-                Textarea::make('deskripsi')
-                    ->columnSpanFull(),
-                Toggle::make('active')
-                    ->required(),
-                TextInput::make('created_by')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                TextInput::make('updated_by')
-                    ->numeric(),
-                TextInput::make('deleted_by')
-                    ->numeric(),
+                Section::make('Tarik Saldo')
+                    ->schema([
+                        Select::make('warga_id')
+                            ->label('Warga')
+                            ->relationship('warga', 'nama')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                        TextInput::make('total')
+                            ->label('Total')
+                            ->required()
+                            ->numeric()
+                            ->prefix('Rp'),
+                        DatePicker::make('tanggal_transaksi')
+                            ->label('Tanggal Transaksi')
+                            ->required(),
+                        Textarea::make('deskripsi')
+                            ->label('Deskripsi')
+                            ->rows(4)
+                            ->columnSpanFull(),
+                        Toggle::make('active')
+                            ->label('Aktif')
+                            ->default(true),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

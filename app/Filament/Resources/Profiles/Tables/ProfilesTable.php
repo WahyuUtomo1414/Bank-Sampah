@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Profiles\Tables;
 
+use App\Filament\Support\AuditTableColumns;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -9,6 +10,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -19,37 +21,40 @@ class ProfilesTable
     {
         return $table
             ->columns([
-                TextColumn::make('logo')
-                    ->searchable(),
+                ImageColumn::make('logo')
+                    ->label('Logo')
+                    ->disk('public')
+                    ->circular(),
                 TextColumn::make('nama')
+                    ->label('Nama')
                     ->searchable(),
                 TextColumn::make('alamat')
+                    ->label('Alamat')
+                    ->limit(40)
                     ->searchable(),
                 TextColumn::make('visi')
+                    ->label('Visi')
+                    ->limit(40)
                     ->searchable(),
                 IconColumn::make('active')
+                    ->label('Aktif')
                     ->boolean(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diubah Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->label('Dihapus Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                ...AuditTableColumns::make(),
             ])
             ->filters([
                 TrashedFilter::make(),

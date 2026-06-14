@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Lokasis\Schemas;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class LokasiForm
@@ -13,20 +14,21 @@ class LokasiForm
     {
         return $schema
             ->components([
-                TextInput::make('nama')
-                    ->required(),
-                Textarea::make('google_maps')
-                    ->columnSpanFull(),
-                Toggle::make('active')
-                    ->required(),
-                TextInput::make('created_by')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                TextInput::make('updated_by')
-                    ->numeric(),
-                TextInput::make('deleted_by')
-                    ->numeric(),
+                Section::make('Lokasi')
+                    ->schema([
+                        TextInput::make('nama')
+                            ->label('Nama Lokasi')
+                            ->required()
+                            ->maxLength(128),
+                        Toggle::make('active')
+                            ->label('Aktif')
+                            ->default(true),
+                        Textarea::make('google_maps')
+                            ->label('Google Maps')
+                            ->rows(5)
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

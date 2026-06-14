@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SetorDetails\Tables;
 
+use App\Filament\Support\AuditTableColumns;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -18,39 +19,39 @@ class SetorDetailsTable
     {
         return $table
             ->columns([
-                TextColumn::make('setorHeader.id')
+                TextColumn::make('setorHeader.kode')
+                    ->label('Kode Setor')
                     ->searchable(),
-                TextColumn::make('barang.id')
+                TextColumn::make('barang.nama')
+                    ->label('Barang')
                     ->searchable(),
                 TextColumn::make('jumlah')
+                    ->label('Jumlah')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('subtotal')
-                    ->numeric()
+                    ->label('Subtotal')
+                    ->money('IDR')
                     ->sortable(),
                 IconColumn::make('active')
+                    ->label('Aktif')
                     ->boolean(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diubah Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->label('Dihapus Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                ...AuditTableColumns::make(),
             ])
             ->filters([
                 TrashedFilter::make(),

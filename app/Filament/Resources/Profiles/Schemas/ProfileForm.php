@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\Profiles\Schemas;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ProfileForm
@@ -13,25 +17,39 @@ class ProfileForm
     {
         return $schema
             ->components([
-                TextInput::make('logo'),
-                TextInput::make('nama')
-                    ->required(),
-                TextInput::make('alamat'),
-                TextInput::make('kontak'),
-                TextInput::make('visi'),
-                TextInput::make('misi'),
-                Textarea::make('deskripsi')
-                    ->columnSpanFull(),
-                Toggle::make('active')
-                    ->required(),
-                TextInput::make('created_by')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                TextInput::make('updated_by')
-                    ->numeric(),
-                TextInput::make('deleted_by')
-                    ->numeric(),
+                Section::make('Profile Lembaga')
+                    ->schema([
+                        FileUpload::make('logo')
+                            ->label('Logo')
+                            ->image()
+                            ->directory('profile'),
+                        TextInput::make('nama')
+                            ->label('Nama')
+                            ->required()
+                            ->maxLength(128),
+                        TextInput::make('alamat')
+                            ->label('Alamat')
+                            ->maxLength(255),
+                        TextInput::make('visi')
+                            ->label('Visi')
+                            ->maxLength(255),
+                        KeyValue::make('kontak')
+                            ->label('Kontak')
+                            ->keyLabel('Jenis')
+                            ->valueLabel('Nilai')
+                            ->columnSpanFull(),
+                        TagsInput::make('misi')
+                            ->label('Misi')
+                            ->columnSpanFull(),
+                        Textarea::make('deskripsi')
+                            ->label('Deskripsi')
+                            ->rows(6)
+                            ->columnSpanFull(),
+                        Toggle::make('active')
+                            ->label('Aktif')
+                            ->default(true),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

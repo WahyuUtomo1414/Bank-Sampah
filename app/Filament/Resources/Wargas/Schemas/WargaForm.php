@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Wargas\Schemas;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class WargaForm
@@ -13,22 +14,26 @@ class WargaForm
     {
         return $schema
             ->components([
-                TextInput::make('nama')
-                    ->required(),
-                TextInput::make('no_tlpn')
-                    ->required(),
-                Textarea::make('alamat')
-                    ->columnSpanFull(),
-                Toggle::make('active')
-                    ->required(),
-                TextInput::make('created_by')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                TextInput::make('updated_by')
-                    ->numeric(),
-                TextInput::make('deleted_by')
-                    ->numeric(),
+                Section::make('Data Warga')
+                    ->schema([
+                        TextInput::make('nama')
+                            ->label('Nama')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('no_tlpn')
+                            ->label('No. Telepon')
+                            ->tel()
+                            ->required()
+                            ->maxLength(18),
+                        Toggle::make('active')
+                            ->label('Aktif')
+                            ->default(true),
+                        Textarea::make('alamat')
+                            ->label('Alamat')
+                            ->rows(4)
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

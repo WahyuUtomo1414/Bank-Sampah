@@ -11,18 +11,26 @@ use App\Models\TarikSaldo;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class TarikSaldoResource extends Resource
 {
     protected static ?string $model = TarikSaldo::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static ?string $recordTitleAttribute = 'TarikSaldo';
+    protected static string|UnitEnum|null $navigationGroup = 'Transaksi';
+
+    protected static ?string $navigationLabel = 'Tarik Saldo';
+
+    protected static ?string $modelLabel = 'Tarik Saldo';
+
+    protected static ?string $pluralModelLabel = 'Tarik Saldo';
+
+    protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Schema $schema): Schema
     {
@@ -50,9 +58,9 @@ class TarikSaldoResource extends Resource
         ];
     }
 
-    public static function getRecordRouteBindingEloquentQuery(): Builder
+    public static function getEloquentQuery(): Builder
     {
-        return parent::getRecordRouteBindingEloquentQuery()
+        return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

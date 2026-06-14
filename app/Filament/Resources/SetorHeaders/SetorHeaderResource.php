@@ -11,18 +11,26 @@ use App\Models\SetorHeader;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class SetorHeaderResource extends Resource
 {
     protected static ?string $model = SetorHeader::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-down-tray';
 
-    protected static ?string $recordTitleAttribute = 'SetorHeader';
+    protected static string|UnitEnum|null $navigationGroup = 'Transaksi';
+
+    protected static ?string $navigationLabel = 'Setor Sampah';
+
+    protected static ?string $modelLabel = 'Setor Sampah';
+
+    protected static ?string $pluralModelLabel = 'Setor Sampah';
+
+    protected static ?string $recordTitleAttribute = 'kode';
 
     public static function form(Schema $schema): Schema
     {
@@ -50,9 +58,9 @@ class SetorHeaderResource extends Resource
         ];
     }
 
-    public static function getRecordRouteBindingEloquentQuery(): Builder
+    public static function getEloquentQuery(): Builder
     {
-        return parent::getRecordRouteBindingEloquentQuery()
+        return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

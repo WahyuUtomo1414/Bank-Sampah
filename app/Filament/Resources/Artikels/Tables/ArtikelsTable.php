@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Artikels\Tables;
 
+use App\Filament\Support\AuditTableColumns;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -18,39 +20,44 @@ class ArtikelsTable
     {
         return $table
             ->columns([
-                TextColumn::make('kategori.id')
+                TextColumn::make('kategori.nama')
+                    ->label('Kategori')
+                    ->badge()
                     ->searchable(),
                 TextColumn::make('judul')
+                    ->label('Judul')
                     ->searchable(),
                 TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable(),
-                TextColumn::make('thumbnail')
-                    ->searchable(),
-                TextColumn::make('foto')
-                    ->searchable(),
+                ImageColumn::make('thumbnail')
+                    ->label('Thumbnail')
+                    ->disk('public')
+                    ->circular(),
+                ImageColumn::make('foto')
+                    ->label('Foto')
+                    ->disk('public')
+                    ->circular()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('active')
+                    ->label('Aktif')
                     ->boolean(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diubah Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->label('Dihapus Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                ...AuditTableColumns::make(),
             ])
             ->filters([
                 TrashedFilter::make(),
