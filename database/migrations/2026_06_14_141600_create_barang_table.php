@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kategori_id')->constrained('kategori')->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignId('unit_id')->constrained('unit')->cascadeOnUpdate()->restrictOnDelete();
+            $table->string('kode', 20)->unique();
             $table->string('nama');
             $table->string('foto')->nullable();
-            $table->decimal('harga', 15, 2);
+            $table->decimal('harga', 15, 2)->nullable();
             $table->text('deskripsi')->nullable();
             $this->base($table);
         });
