@@ -38,6 +38,7 @@ class BarangsTable
                 ImageColumn::make('foto')
                     ->label('Foto')
                     ->disk('public')
+                    ->defaultImageUrl(asset('images/barang-placeholder.svg'))
                     ->circular(),
                 TextColumn::make('harga')
                     ->label('Harga')

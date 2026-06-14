@@ -47,11 +47,9 @@ class BukuTransaksiForm
                             ->label('Deskripsi')
                             ->rows(4)
                             ->columnSpanFull(),
-                        Toggle::make('active')
-                            ->label('Aktif')
-                            ->default(true),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

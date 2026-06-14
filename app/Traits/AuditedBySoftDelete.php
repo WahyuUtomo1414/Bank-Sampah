@@ -4,13 +4,11 @@ namespace App\Traits;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
-
 trait AuditedBySoftDelete
 {
     protected static function resolveAuditUserId(): int
     {
-        return Auth::id() ?? 1;
+        return 1;
     }
 
     public static function bootAuditedBySoftDelete()

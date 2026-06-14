@@ -55,7 +55,8 @@ class ArtikelForm
                             ->label('Aktif')
                             ->default(true),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

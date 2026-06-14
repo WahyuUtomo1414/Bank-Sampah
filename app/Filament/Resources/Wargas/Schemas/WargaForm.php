@@ -33,7 +33,8 @@ class WargaForm
                             ->rows(4)
                             ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

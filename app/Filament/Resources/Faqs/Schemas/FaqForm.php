@@ -29,7 +29,8 @@ class FaqForm
                             ->rows(6)
                             ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

@@ -20,6 +20,8 @@ class SetorDetailResource extends Resource
 {
     protected static ?string $model = SetorDetail::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-list-bullet';
 
     protected static string|UnitEnum|null $navigationGroup = 'Transaksi';
