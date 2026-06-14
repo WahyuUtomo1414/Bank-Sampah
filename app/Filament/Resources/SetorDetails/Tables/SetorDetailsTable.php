@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Filament\Resources\SetorDetails\Tables;
+
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Table;
+
+class SetorDetailsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('setorHeader.id')
+                    ->searchable(),
+                TextColumn::make('barang.id')
+                    ->searchable(),
+                TextColumn::make('jumlah')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('subtotal')
+                    ->numeric()
+                    ->sortable(),
+                IconColumn::make('active')
+                    ->boolean(),
+                TextColumn::make('created_by')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('updated_by')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('deleted_by')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                TrashedFilter::make(),
+            ])
+            ->recordActions([
+                EditAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                ]),
+            ]);
+    }
+}
