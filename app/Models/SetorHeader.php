@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\BukuTransaksiSynchronizer;
 use App\Traits\AuditedBySoftDelete;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,19 @@ class SetorHeader extends Model
             'tanggal_transaksi' => 'date',
             'total_harga' => 'decimal:2',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleted(function (self $setorHeader): void {
+            app(BukuTransaksiSynchronizer::class)
+                ->deleteForSetorHeader($setorHeader, $setorHeader->isForceDeleting());
+        });
+
+        static::restored(function (self $setorHeader): void {
+            app(BukuTransaksiSynchronizer::class)
+                ->restoreForSetorHeader($setorHeader);
+        });
     }
 
     public function warga(): BelongsTo

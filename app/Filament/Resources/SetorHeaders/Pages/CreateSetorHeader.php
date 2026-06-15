@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SetorHeaders\Pages;
 
 use App\Filament\Resources\SetorHeaders\SetorHeaderResource;
+use App\Support\BukuTransaksiSynchronizer;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSetorHeader extends CreateRecord
@@ -15,5 +16,11 @@ class CreateSetorHeader extends CreateRecord
             ->sum(fn (array $item) => (float) ($item['subtotal'] ?? 0));
 
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        app(BukuTransaksiSynchronizer::class)
+            ->syncForSetorHeader($this->getRecord());
     }
 }

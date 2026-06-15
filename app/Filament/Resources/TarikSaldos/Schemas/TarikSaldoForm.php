@@ -6,7 +6,6 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -28,9 +27,11 @@ class TarikSaldoForm
                             ->label('Total')
                             ->required()
                             ->numeric()
+                            ->minValue(1)
                             ->prefix('Rp'),
                         DatePicker::make('tanggal_transaksi')
                             ->label('Tanggal Transaksi')
+                            ->default(now())
                             ->required(),
                         Textarea::make('deskripsi')
                             ->label('Deskripsi')

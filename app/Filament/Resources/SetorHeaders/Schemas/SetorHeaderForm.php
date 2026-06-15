@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\SetorHeaders\Schemas;
 
 use App\Models\Barang;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -34,12 +34,14 @@ class SetorHeaderForm
                             ->maxLength(128),
                         DatePicker::make('tanggal_transaksi')
                             ->label('Tanggal Transaksi')
+                            ->default(now())
                             ->required(),
                         TextInput::make('total_harga')
                             ->label('Total Harga')
                             ->readOnly()
                             ->dehydrated()
                             ->numeric()
+                            ->minValue(0)
                             ->default(0)
                             ->prefix('Rp'),
                         Textarea::make('deskripsi')
@@ -54,12 +56,14 @@ class SetorHeaderForm
                         Repeater::make('detail')
                             ->label('Item Setoran')
                             ->relationship()
+                            ->minItems(1)
                             ->live()
                             ->afterStateUpdated(fn ($state, Set $set) => self::syncGrandTotal($set, $state))
                             ->schema([
                                 Select::make('barang_id')
                                     ->label('Barang')
                                     ->relationship('barang', 'nama')
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->searchable()
                                     ->preload()
                                     ->required()
@@ -73,6 +77,7 @@ class SetorHeaderForm
                                     ->label('Jumlah')
                                     ->required()
                                     ->numeric()
+                                    ->minValue(1)
                                     ->default(1)
                                     ->live()
                                     ->afterStateUpdated(function (Get $get, Set $set) {

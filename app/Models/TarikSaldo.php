@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\BukuTransaksiSynchronizer;
 use App\Traits\AuditedBySoftDelete;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,19 @@ class TarikSaldo extends Model
             'tanggal_transaksi' => 'date',
             'total' => 'decimal:2',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleted(function (self $tarikSaldo): void {
+            app(BukuTransaksiSynchronizer::class)
+                ->deleteForTarikSaldo($tarikSaldo, $tarikSaldo->isForceDeleting());
+        });
+
+        static::restored(function (self $tarikSaldo): void {
+            app(BukuTransaksiSynchronizer::class)
+                ->restoreForTarikSaldo($tarikSaldo);
+        });
     }
 
     public function warga(): BelongsTo

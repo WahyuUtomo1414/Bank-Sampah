@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SetorHeaders\Pages;
 
 use App\Filament\Resources\SetorHeaders\SetorHeaderResource;
+use App\Support\BukuTransaksiSynchronizer;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
@@ -18,6 +19,12 @@ class EditSetorHeader extends EditRecord
             ->sum(fn (array $item) => (float) ($item['subtotal'] ?? 0));
 
         return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        app(BukuTransaksiSynchronizer::class)
+            ->syncForSetorHeader($this->getRecord());
     }
 
     protected function getHeaderActions(): array
