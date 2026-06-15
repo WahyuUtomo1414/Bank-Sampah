@@ -29,9 +29,10 @@ class SetorHeaderForm
                             ->required(),
                         TextInput::make('kode')
                             ->label('Kode Transaksi')
-                            ->required()
-                            ->unique(ignoreRecord: true)
-                            ->maxLength(128),
+                            ->readOnly()
+                            ->dehydrated(false)
+                            ->maxLength(128)
+                            ->placeholder('Digenerate otomatis saat data disimpan'),
                         DatePicker::make('tanggal_transaksi')
                             ->label('Tanggal Transaksi')
                             ->default(now())
