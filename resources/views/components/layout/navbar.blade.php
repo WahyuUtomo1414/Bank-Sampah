@@ -1,5 +1,6 @@
 <header 
     class="sticky top-0 z-50 border-b border-[var(--color-outline-variant)] bg-white/80 backdrop-blur-xl transition-all duration-300"
+    x-data="{ mobileMenuOpen: false }"
 >
     <div class="page-shell">
         <div class="flex items-center justify-between py-4">
@@ -43,25 +44,27 @@
             <button
                 type="button"
                 class="inline-flex size-11 items-center justify-center rounded-xl border border-[var(--color-outline-variant)] bg-white text-[var(--color-ink)] transition-colors hover:bg-[var(--color-surface-container)] lg:hidden"
-                data-nav-toggle
-                aria-expanded="false"
-                aria-controls="mobile-menu"
+                @click="mobileMenuOpen = !mobileMenuOpen"
+                :aria-expanded="mobileMenuOpen"
             >
                 <span class="sr-only">Menu Utama</span>
                 <svg 
-                    class="size-6" 
+                    class="size-6 transition-transform duration-300" 
+                    :class="{ 'rotate-90': mobileMenuOpen }"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 >
-                    <path stroke-linecap="round" d="M4 8h16M4 16h16" />
+                    <path x-show="!mobileMenuOpen" stroke-linecap="round" d="M4 8h16M4 16h16" />
+                    <path x-show="mobileMenuOpen" stroke-linecap="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
         <!-- Mobile Menu -->
         <div 
-            id="mobile-menu"
-            class="hidden lg:hidden" 
-            data-nav-menu
+            class="lg:hidden" 
+            x-show="mobileMenuOpen" 
+            x-collapse
+            style="display: none;"
         >
             <div class="panel mb-4 overflow-hidden border-none bg-white/95 p-2 shadow-xl ring-1 ring-black/5">
                 @foreach ($navItems as $item)
