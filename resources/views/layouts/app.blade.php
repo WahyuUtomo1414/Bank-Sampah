@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,13 +8,17 @@
             name="description"
             content="@yield('meta_description', 'Website Bank Sampah untuk layanan setor sampah, tarik tunai, dan informasi lingkungan.')"
         >
+        
+        <!-- Favicon placeholder -->
+        <link rel="icon" href="{{ asset('favicon.ico') }}">
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen">
-        <div class="relative isolate overflow-x-hidden">
+    <body class="flex min-h-full flex-col font-sans">
+        <div class="relative isolate flex flex-1 flex-col overflow-x-hidden">
             @include('components.navbar')
 
-            <main>
+            <main class="flex-1">
                 @yield('content')
             </main>
 
