@@ -67,6 +67,8 @@ class ArtikelController extends Controller
                 ...$this->formatArticleCard($article),
                 'content' => $article->konten,
                 'image' => $article->foto ?: $article->thumbnail,
+                'imageUrl' => $this->resolveArticleImage($article->foto ?: $article->thumbnail),
+                'hasImage' => filled($article->foto ?: $article->thumbnail),
             ],
             'relatedArticles' => $relatedArticles->map(fn (Artikel $related) => $this->formatArticleCard($related)),
         ]);
@@ -84,6 +86,25 @@ class ArtikelController extends Controller
             'date' => $article->created_at?->locale('id')->translatedFormat('d F Y') ?? '-',
             'readTime' => $minutes . ' menit baca',
             'image' => $article->thumbnail,
+            'imageUrl' => $this->resolveArticleImage($article->thumbnail),
+            'hasImage' => filled($article->thumbnail),
         ];
+    }
+
+    private function resolveArticleImage(?string $path): string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, ['images/', 'storage/'])) {
+            return asset($path);
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
     }
 }

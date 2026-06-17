@@ -12,7 +12,7 @@
         </div>
 
         <div class="mt-16 mx-auto max-w-4xl space-y-4">
-            @foreach ($faqs as $index => $faq)
+            @forelse ($faqs as $index => $faq)
                 <div 
                     class="panel group overflow-hidden" 
                     x-data="{ open: false }"
@@ -40,7 +40,11 @@
                         <p class="text-base leading-relaxed text-[var(--color-ink-muted)]">{{ $faq['answer'] }}</p>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="rounded-[1.75rem] border border-dashed border-[var(--color-outline-variant)] bg-white/70 p-6 text-sm leading-7 text-[var(--color-ink-muted)]">
+                    FAQ belum tersedia. Pertanyaan umum akan tampil di sini setelah data diisi dari admin.
+                </div>
+            @endforelse
         </div>
     </div>
 </section>

@@ -11,6 +11,14 @@
                 <div class="mt-10 overflow-hidden rounded-[2rem] border border-[var(--color-outline-variant)] bg-white/85 shadow-[var(--shadow-soft)]">
                     <div class="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr]">
                         <div class="relative overflow-hidden bg-[linear-gradient(135deg,rgba(223,243,226,0.9),rgba(247,251,247,1))] p-8 md:p-10 lg:p-12">
+                            @if ($featuredArticle['hasImage'])
+                                <img src="{{ $featuredArticle['imageUrl'] }}" alt="{{ $featuredArticle['title'] }}" class="absolute inset-0 h-full w-full object-cover opacity-20">
+                                <div class="absolute inset-0 bg-white/45"></div>
+                            @else
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <x-common.trash-icon class="size-36 text-[var(--color-primary)]/18" />
+                                </div>
+                            @endif
                             <div class="absolute inset-0 soft-grid opacity-45"></div>
                             <div class="relative">
                                 <span class="inline-flex rounded-full bg-white/88 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-primary-dark)]">
@@ -72,6 +80,14 @@
                 @foreach ($articles as $article)
                     <article class="group overflow-hidden rounded-[1.75rem] border border-[var(--color-outline-variant)] bg-white shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
                         <div class="relative h-44 overflow-hidden bg-[linear-gradient(135deg,#f2f8f2_0%,#dff0e1_100%)]">
+                            @if ($article['hasImage'])
+                                <img src="{{ $article['imageUrl'] }}" alt="{{ $article['title'] }}" class="absolute inset-0 h-full w-full object-cover">
+                                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,251,247,0.1),rgba(22,48,27,0.2))]"></div>
+                            @else
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <x-common.trash-icon class="size-24 text-[var(--color-primary)]/22" />
+                                </div>
+                            @endif
                             <div class="absolute inset-0 soft-grid opacity-45"></div>
                             <div class="absolute inset-x-6 bottom-6">
                                 <span class="inline-flex rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-primary-dark)]">

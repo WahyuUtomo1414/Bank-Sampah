@@ -2,10 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Artikel;
+use App\Models\Barang;
+use App\Models\Faq;
+use Illuminate\Support\Str;
+
 class HomeController extends Controller
 {
     public function index()
     {
+        $articles = Artikel::query()
+            ->with('kategori')
+            ->latest('created_at')
+            ->limit(6)
+            ->get()
+            ->map(fn (Artikel $article) => $this->formatArticleCard($article));
+
+        $faqs = Faq::query()
+            ->latest('created_at')
+            ->limit(5)
+            ->get()
+            ->map(fn (Faq $faq) => [
+                'question' => $faq->pertanyaan,
+                'answer' => $faq->jawaban,
+            ]);
+
+        $featuredWaste = Barang::query()
+            ->with(['kategori', 'unit'])
+            ->latest('created_at')
+            ->limit(8)
+            ->get()
+            ->map(fn (Barang $barang) => [
+                'name' => $barang->nama,
+                'category' => $barang->kategori?->nama ?? 'Material',
+                'description' => $barang->deskripsi ?: 'Material yang dapat dipilah dan disetor dalam kondisi bersih serta kering.',
+                'price' => $barang->harga ? 'Rp' . number_format((float) $barang->harga, 0, ',', '.') : null,
+                'unit' => $barang->unit?->nama,
+                'imageUrl' => $this->resolveBarangImage($barang->foto),
+            ]);
+
         return view('pages.home', [
             'hero' => [
                 'eyebrow' => 'Solusi Cerdas Pengelolaan Sampah',
@@ -48,41 +83,60 @@ class HomeController extends Controller
                 'Admin melakukan verifikasi jenis dan penimbangan berat sampah.',
                 'Dapatkan saldo instan yang tercatat di sistem buku transaksi.',
             ],
-            'featuredWaste' => [
-                ['name' => 'Plastik PET', 'price' => 'Rp2.500/kg', 'category' => 'Plastik', 'icon' => 'beaker'],
-                ['name' => 'Kardus Bersih', 'price' => 'Rp1.500/kg', 'category' => 'Kertas', 'icon' => 'document-text'],
-                ['name' => 'Logam Campur', 'price' => 'Rp4.000/kg', 'category' => 'Logam', 'icon' => 'cube'],
-            ],
-            'articles' => [
-                [
-                    'title' => 'Panduan Memilah Sampah untuk Pemula',
-                    'excerpt' => 'Bingung mulai dari mana? Baca langkah mudah memisahkan jenis sampah di rumah Anda.',
-                    'date' => '15 Juni 2026',
-                ],
-                [
-                    'title' => 'Mengapa Menabung Sampah Itu Menguntungkan?',
-                    'excerpt' => 'Selain lingkungan yang bersih, tabungan sampah memberikan nilai ekonomi nyata.',
-                    'date' => '12 Juni 2026',
-                ],
-            ],
-            'faqs' => [
-                [
-                    'question' => 'Jenis sampah apa saja yang diterima?',
-                    'answer' => 'Kami menerima berbagai jenis sampah non-organik seperti plastik, kertas, logam, dan kaca. Pastikan sampah dalam keadaan bersih dan kering.',
-                ],
-                [
-                    'question' => 'Bagaimana cara melakukan penarikan saldo?',
-                    'answer' => 'Warga dapat mendatangi admin di titik layanan pada jadwal yang ditentukan untuk melakukan penarikan tunai sesuai saldo tersedia.',
-                ],
-                [
-                    'question' => 'Apakah ada batas minimal setoran?',
-                    'answer' => 'Tidak ada batas minimal berat untuk setoran. Kami menghargai setiap usaha warga untuk mulai memilah sampah.',
-                ],
-                [
-                    'question' => 'Dimana saya bisa melihat riwayat transaksi?',
-                    'answer' => 'Saat ini seluruh riwayat transaksi dicatat oleh admin dan dapat Anda tanyakan langsung saat melakukan kunjungan setor.',
-                ],
-            ]
+            'featuredWaste' => $featuredWaste,
+            'articles' => $articles,
+            'faqs' => $faqs,
         ]);
+    }
+
+    private function formatArticleCard(Artikel $article): array
+    {
+        $minutes = max(1, (int) ceil(str_word_count(strip_tags($article->konten)) / 160));
+
+        return [
+            'slug' => $article->slug,
+            'category' => $article->kategori?->nama ?? 'Artikel',
+            'title' => $article->judul,
+            'excerpt' => Str::limit(strip_tags($article->konten), 120),
+            'date' => $article->created_at?->locale('id')->translatedFormat('d F Y') ?? '-',
+            'readTime' => $minutes . ' menit baca',
+            'image' => $article->thumbnail,
+            'imageUrl' => $this->resolveArticleImage($article->thumbnail),
+            'hasImage' => filled($article->thumbnail),
+        ];
+    }
+
+    private function resolveArticleImage(?string $path): string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, ['images/', 'storage/'])) {
+            return asset($path);
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    }
+
+    private function resolveBarangImage(?string $path): string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, ['images/', 'storage/'])) {
+            return asset($path);
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
     }
 }

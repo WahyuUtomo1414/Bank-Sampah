@@ -18,7 +18,7 @@ class BukuTransaksiSynchronizer
                 'warga_id' => $setorHeader->warga_id,
                 'total_harga' => (float) $setorHeader->total_harga,
                 'deskripsi' => $setorHeader->deskripsi,
-                'active' => $setorHeader->active,
+                'active' => true,
             ],
         );
     }
@@ -33,7 +33,7 @@ class BukuTransaksiSynchronizer
                 'warga_id' => $tarikSaldo->warga_id,
                 'total_harga' => -abs((float) $tarikSaldo->total),
                 'deskripsi' => $tarikSaldo->deskripsi,
-                'active' => $tarikSaldo->active,
+                'active' => true,
             ],
         );
     }

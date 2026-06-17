@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SetorHeaders\Schemas;
 
 use App\Models\Barang;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -49,6 +50,7 @@ class SetorHeaderForm
                             ->label('Deskripsi')
                             ->rows(4)
                             ->columnSpanFull(),
+                        Hidden::make('active')->default(true)->dehydrated(false),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
@@ -93,6 +95,7 @@ class SetorHeaderForm
                                     ->numeric()
                                     ->prefix('Rp')
                                     ->default(0),
+                                Hidden::make('active')->default(true)->dehydrated(false),
                             ])
                             ->columns(3)
                             ->columnSpanFull(),

@@ -104,42 +104,11 @@
     }
 
     .soft-band {
-        @apply relative isolate overflow-hidden;
-    }
-
-    .soft-band::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background:
-            linear-gradient(180deg, rgba(232, 245, 233, 0.72) 0%, rgba(247, 251, 247, 0.18) 55%, rgba(247, 251, 247, 0) 100%);
+        @apply bg-transparent;
     }
 
     .dark-band {
-        @apply relative isolate overflow-hidden text-white;
-        background: linear-gradient(180deg, #234f29 0%, #1f5a24 100%);
-    }
-
-    .dark-band::before,
-    .dark-band::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        height: 96px;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .dark-band::before {
-        top: 0;
-        background: linear-gradient(180deg, rgba(247, 251, 247, 1) 0%, rgba(247, 251, 247, 0) 100%);
-    }
-
-    .dark-band::after {
-        bottom: 0;
-        background: linear-gradient(180deg, rgba(31, 90, 36, 0) 0%, rgba(247, 251, 247, 1) 100%);
+        @apply bg-[var(--color-primary-dark)] text-white;
     }
 
     .scroll-strip {

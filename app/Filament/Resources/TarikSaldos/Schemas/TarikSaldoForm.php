@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TarikSaldos\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -37,6 +38,7 @@ class TarikSaldoForm
                             ->label('Deskripsi')
                             ->rows(4)
                             ->columnSpanFull(),
+                        Hidden::make('active')->default(true)->dehydrated(false),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),

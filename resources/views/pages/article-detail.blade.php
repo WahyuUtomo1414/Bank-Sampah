@@ -31,6 +31,14 @@
 
                 <div class="mt-10 overflow-hidden rounded-[2rem] border border-[var(--color-outline-variant)] bg-[linear-gradient(135deg,#f2f8f2_0%,#dff0e1_100%)]">
                     <div class="relative h-[18rem] md:h-[24rem]">
+                        @if ($article['hasImage'])
+                            <img src="{{ $article['imageUrl'] }}" alt="{{ $article['title'] }}" class="absolute inset-0 h-full w-full object-cover">
+                            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,251,247,0.15),rgba(22,48,27,0.3))]"></div>
+                        @else
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <x-common.trash-icon class="size-40 text-[var(--color-primary)]/22" />
+                            </div>
+                        @endif
                         <div class="absolute inset-0 soft-grid opacity-45"></div>
                         <div class="absolute inset-8 flex items-end">
                             <div class="rounded-[1.5rem] bg-white/88 px-5 py-4 shadow-[var(--shadow-soft)] backdrop-blur-sm">
@@ -88,7 +96,16 @@
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                     @foreach ($relatedArticles as $relatedArticle)
                         <article class="overflow-hidden rounded-[1.75rem] border border-[var(--color-outline-variant)] bg-white shadow-[var(--shadow-soft)]">
-                            <div class="h-40 bg-[linear-gradient(135deg,#f2f8f2_0%,#dff0e1_100%)]"></div>
+                            <div class="relative h-40 overflow-hidden bg-[linear-gradient(135deg,#f2f8f2_0%,#dff0e1_100%)]">
+                                @if ($relatedArticle['hasImage'])
+                                    <img src="{{ $relatedArticle['imageUrl'] }}" alt="{{ $relatedArticle['title'] }}" class="absolute inset-0 h-full w-full object-cover">
+                                    <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,251,247,0.12),rgba(22,48,27,0.22))]"></div>
+                                @else
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <x-common.trash-icon class="size-24 text-[var(--color-primary)]/20" />
+                                    </div>
+                                @endif
+                            </div>
                             <div class="p-6">
                                 <span class="inline-flex rounded-full bg-[var(--color-primary-soft)] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-primary-dark)]">
                                     {{ $relatedArticle['category'] }}

@@ -287,6 +287,11 @@ class BarangSeeder extends Seeder
             ],
         ];
 
+        foreach ($items as &$item) {
+            $item['deskripsi'] = null;
+        }
+        unset($item);
+
         foreach ($items as $item) {
             Barang::updateOrCreate(
                 ['kode' => $item['kode']],
