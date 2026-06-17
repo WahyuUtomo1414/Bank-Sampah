@@ -1,6 +1,6 @@
 @props(['services'])
 
-<section class="section-space bg-[var(--color-surface-container-low)]/50">
+<section class="soft-band section-space">
     <div class="page-shell">
         <div class="flex flex-col items-center text-center">
             <x-common.section-header
@@ -11,9 +11,9 @@
             />
         </div>
 
-        <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
             @foreach ($services as $service)
-                <div class="group panel panel-hover p-10">
+                <div class="group section-card p-6 md:p-8">
                     <div class="flex size-14 items-center justify-center rounded-2xl bg-[var(--color-surface-container)] text-[var(--color-primary)] transition-colors group-hover:bg-[var(--color-primary)] group-hover:text-white">
                         <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             @if($service['icon'] === 'scale')
@@ -25,8 +25,12 @@
                             @endif
                         </svg>
                     </div>
-                    <h3 class="mt-8 font-display text-2xl font-bold text-[var(--color-ink)]">{{ $service['title'] }}</h3>
-                    <p class="mt-4 text-base leading-relaxed text-[var(--color-ink-muted)]">{{ $service['description'] }}</p>
+                    <div class="mt-6 flex items-center justify-between gap-4">
+                        <h3 class="font-display text-xl font-bold text-[var(--color-ink)] md:text-2xl">{{ $service['title'] }}</h3>
+                        <span class="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--color-ink-muted)]">0{{ $loop->iteration }}</span>
+                    </div>
+                    <p class="mt-4 text-sm leading-7 text-[var(--color-ink-muted)] md:text-base">{{ $service['description'] }}</p>
+                    <div class="mt-6 h-1.5 w-24 rounded-full bg-[var(--color-surface-container)] transition-all duration-300 group-hover:w-32 group-hover:bg-[var(--color-primary)]"></div>
                 </div>
             @endforeach
         </div>

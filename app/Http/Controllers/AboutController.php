@@ -6,32 +6,40 @@ class AboutController extends Controller
 {
     public function index()
     {
+        $locations = \App\Models\Lokasi::query()
+            ->where('active', true)
+            ->get()
+            ->map(function ($location) {
+                return [
+                    'nama' => $location->nama,
+                    'google_maps' => $location->google_maps,
+                ];
+            })
+            ->all();
+
         return view('pages.about', [
             'hero' => [
                 'eyebrow' => 'Tentang Kami',
-                'title' => 'Membangun kebiasaan lingkungan yang tertib dan bernilai ekonomi.',
-                'description' => 'Bank Sampah hadir untuk membantu warga mengelola sampah terpilah sekaligus membangun budaya lingkungan yang konsisten di tingkat komunitas.',
+                'title' => 'Membangun Ekosistem Lingkungan yang Bernilai.',
+                'description' => 'Kami hadir sebagai jembatan bagi warga untuk mengelola sampah dengan cara yang modern, transparan, dan memberikan dampak ekonomi nyata bagi komunitas.',
             ],
             'story' => [
-                'lead' => 'Kami memadukan edukasi lingkungan, layanan komunitas, dan pencatatan transaksi yang rapi.',
+                'lead' => 'Berawal dari kepedulian terhadap tumpukan sampah yang tidak terkelola.',
                 'paragraphs' => [
-                    'Bank Sampah ini dibangun untuk memudahkan warga menyetor sampah terpilah tanpa proses yang membingungkan.',
-                    'Seluruh transaksi dilakukan oleh admin agar perhitungan berat, estimasi nilai uang, dan saldo tetap lebih tertib dan mudah dipantau.',
+                    'Kami menyadari bahwa pemilahan sampah adalah kunci utama dalam pelestarian lingkungan. Namun, tanpa sistem yang memudahkan, kebiasaan ini sulit untuk konsisten dijalankan oleh masyarakat luas.',
+                    'Melalui Bank Sampah ini, kami mengintegrasikan teknologi pencatatan digital dengan layanan komunitas yang hangat. Admin kami siap mendampingi setiap langkah Anda, mulai dari penimbangan hingga pengelolaan saldo tabungan sampah.',
                 ],
-            ],
-            'values' => [
-                ['title' => 'Transparan', 'description' => 'Nilai setoran dan penarikan dibuat jelas agar warga merasa aman.'],
-                ['title' => 'Ramah Warga', 'description' => 'Alur layanan dibuat sederhana dan mudah dipahami semua kalangan.'],
-                ['title' => 'Berorientasi Lingkungan', 'description' => 'Setiap layanan mendukung kebiasaan memilah sampah dari rumah.'],
             ],
             'visionMission' => [
-                'vision' => 'Menjadi pusat layanan bank sampah komunitas yang modern, ramah, dan berdampak nyata.',
+                'vision' => 'Menjadi pusat pemberdayaan lingkungan berbasis komunitas yang paling terpercaya dan inovatif di Indonesia.',
                 'missions' => [
-                    'Mendorong warga memilah sampah secara konsisten.',
-                    'Menyediakan layanan setor dan tarik tunai yang tertib.',
-                    'Membangun kolaborasi dengan komunitas, sekolah, dan lingkungan sekitar.',
+                    'Mengedukasi masyarakat tentang pentingnya pemilahan sampah dari rumah.',
+                    'Menyediakan platform tabungan sampah yang transparan dan mudah diakses.',
+                    'Menciptakan nilai ekonomi tambahan bagi warga melalui pengelolaan sampah terpadu.',
+                    'Berkolaborasi dengan berbagai pihak untuk memperluas dampak positif bagi lingkungan.'
                 ],
             ],
+            'locations' => $locations,
         ]);
     }
 }

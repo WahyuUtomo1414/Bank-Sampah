@@ -9,7 +9,7 @@ class HomeController extends Controller
         return view('pages.home', [
             'hero' => [
                 'eyebrow' => 'Solusi Cerdas Pengelolaan Sampah',
-                'title' => 'Ubah Sampah Jadi Nilai, Bangun Lingkungan Lebih Rapi.',
+                'title' => 'Ubah Sampah Menjadi Cuan.',
                 'description' => 'Kami hadir sebagai mitra komunitas untuk mengelola sampah terpilah dengan sistem yang transparan, profesional, dan ramah warga.',
                 'primaryCta' => ['label' => 'Jelajahi Layanan', 'href' => route('services')],
                 'secondaryCta' => ['label' => 'Kenali Kami', 'href' => route('about')],

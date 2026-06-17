@@ -1,6 +1,6 @@
 @props(['faqs'])
 
-<section class="section-space bg-[var(--color-surface-container-low)]/30">
+<section class="soft-band section-space">
     <div class="page-shell">
         <div class="flex flex-col items-center text-center">
             <x-common.section-header

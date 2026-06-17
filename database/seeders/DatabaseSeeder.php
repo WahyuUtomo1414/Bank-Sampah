@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             ProfileSeeder::class,
             ArtikelSeeder::class,
+            LokasiSeeder::class,
         ]);
     }
 }

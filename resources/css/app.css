@@ -23,6 +23,7 @@
     --color-primary-container: #4caf50;
     --color-on-primary-container: #103916;
     --color-primary-dark: #1f5a24;
+    --color-primary-soft: #eef8ef;
     
     --color-secondary: #5f7a63;
     --color-secondary-container: #dce9de;
@@ -85,6 +86,69 @@
 
     .panel-hover {
         @apply hover:border-[var(--color-outline)] hover:shadow-[var(--shadow-lift)] hover:-translate-y-1;
+    }
+
+    .glass-panel {
+        @apply rounded-[1.75rem] border border-white/60 bg-white/75 shadow-[var(--shadow-soft)] backdrop-blur-xl;
+    }
+
+    .soft-grid {
+        background-image:
+            linear-gradient(to right, rgba(127, 155, 132, 0.14) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(127, 155, 132, 0.14) 1px, transparent 1px);
+        background-size: 26px 26px;
+    }
+
+    .section-card {
+        @apply rounded-[2rem] border border-[var(--color-outline-variant)] bg-white/80 shadow-[var(--shadow-soft)] backdrop-blur-sm;
+    }
+
+    .soft-band {
+        @apply relative isolate overflow-hidden;
+    }
+
+    .soft-band::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background:
+            linear-gradient(180deg, rgba(232, 245, 233, 0.72) 0%, rgba(247, 251, 247, 0.18) 55%, rgba(247, 251, 247, 0) 100%);
+    }
+
+    .dark-band {
+        @apply relative isolate overflow-hidden text-white;
+        background: linear-gradient(180deg, #234f29 0%, #1f5a24 100%);
+    }
+
+    .dark-band::before,
+    .dark-band::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 96px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .dark-band::before {
+        top: 0;
+        background: linear-gradient(180deg, rgba(247, 251, 247, 1) 0%, rgba(247, 251, 247, 0) 100%);
+    }
+
+    .dark-band::after {
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(31, 90, 36, 0) 0%, rgba(247, 251, 247, 1) 100%);
+    }
+
+    .scroll-strip {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .scroll-strip::-webkit-scrollbar {
+        display: none;
     }
 
     .btn-primary {

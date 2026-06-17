@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.public')
 
 @section('title', 'Bank Sampah | Solusi Pengelolaan Sampah Komunitas')
 
