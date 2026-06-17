@@ -73,8 +73,7 @@ class SetorHeaderForm
                                     ->live()
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         self::syncItemSubtotal($get, $set);
-                                        $set('../../total_harga', collect($get('../../detail') ?? [])
-                                            ->sum(fn ($item) => (float) ($item['subtotal'] ?? 0)));
+                                        self::syncGrandTotalFromItems($get, $set);
                                     }),
                                 TextInput::make('jumlah')
                                     ->label('Jumlah')
@@ -85,8 +84,7 @@ class SetorHeaderForm
                                     ->live()
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         self::syncItemSubtotal($get, $set);
-                                        $set('../../total_harga', collect($get('../../detail') ?? [])
-                                            ->sum(fn ($item) => (float) ($item['subtotal'] ?? 0)));
+                                        self::syncGrandTotalFromItems($get, $set);
                                     }),
                                 TextInput::make('subtotal')
                                     ->label('Subtotal')
@@ -98,7 +96,8 @@ class SetorHeaderForm
                                 Hidden::make('active')->default(true)->dehydrated(false),
                             ])
                             ->columns(3)
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->deleteAction(fn ($state, Set $set, Get $get) => self::syncGrandTotalFromItems($get, $set)),
                     ])
                     ->columnSpanFull(),
             ]);
@@ -110,6 +109,14 @@ class SetorHeaderForm
         $jumlah = (float) ($get('jumlah') ?? 0);
 
         $set('subtotal', $harga * $jumlah);
+    }
+
+    protected static function syncGrandTotalFromItems(Get $get, Set $set): void
+    {
+        $total = collect($get('../../detail') ?? [])
+            ->sum(fn ($item) => (float) ($item['subtotal'] ?? 0));
+
+        $set('../../total_harga', $total);
     }
 
     protected static function syncGrandTotal(Set $set, mixed $state): void

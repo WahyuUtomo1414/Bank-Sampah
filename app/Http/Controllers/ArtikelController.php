@@ -77,6 +77,7 @@ class ArtikelController extends Controller
     private function formatArticleCard(Artikel $article): array
     {
         $minutes = max(1, (int) ceil(str_word_count(strip_tags($article->konten)) / 160));
+        $imagePath = $article->foto ?: $article->thumbnail;
 
         return [
             'slug' => $article->slug,
@@ -85,9 +86,9 @@ class ArtikelController extends Controller
             'excerpt' => Str::limit(strip_tags($article->konten), 140),
             'date' => $article->created_at?->locale('id')->translatedFormat('d F Y') ?? '-',
             'readTime' => $minutes . ' menit baca',
-            'image' => $article->thumbnail,
-            'imageUrl' => $this->resolveArticleImage($article->thumbnail),
-            'hasImage' => filled($article->thumbnail),
+            'image' => $imagePath,
+            'imageUrl' => $this->resolveArticleImage($imagePath),
+            'hasImage' => filled($imagePath),
         ];
     }
 
