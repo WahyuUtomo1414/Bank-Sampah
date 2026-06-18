@@ -10,7 +10,7 @@ class ProfileSeeder extends Seeder
     public function run(): void
     {
         Profile::updateOrCreate(
-            ['nama' => 'Bank Sampah Hijau Lestari'],
+            ['nama' => 'Bank Sampah'],
             [
                 'logo' => 'profile/logo-bank-sampah-hijau-lestari.png',
                 'alamat' => 'Jl. Lingkungan Bersih No. 21, Cimahi, Jawa Barat',
@@ -27,7 +27,7 @@ class ProfileSeeder extends Seeder
                     'Mengedukasi masyarakat tentang daur ulang dan lingkungan sehat.',
                     'Membangun kolaborasi warga, sekolah, dan komunitas peduli lingkungan.',
                 ],
-                'deskripsi' => 'Bank Sampah Hijau Lestari adalah inisiatif lingkungan yang membantu warga mengelola sampah dengan lebih tertib, bernilai ekonomi, dan berdampak baik bagi kebersihan lingkungan sekitar.',
+                'deskripsi' => 'Bank Sampah adalah inisiatif lingkungan yang membantu warga mengelola sampah dengan lebih tertib, bernilai ekonomi, dan berdampak baik bagi kebersihan lingkungan sekitar.',
             ]
         );
     }
