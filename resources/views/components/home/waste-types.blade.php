@@ -23,7 +23,7 @@
             @foreach ($featuredWaste as $item)
                 <article class="min-w-[16rem] rounded-[1.75rem] border border-white/10 bg-white/6 p-5 shadow-[var(--shadow-soft)] backdrop-blur-sm sm:min-w-[18rem] lg:min-w-[20rem]">
                     <div class="relative h-36 overflow-hidden rounded-[1.25rem] bg-white/10">
-                        @if ($item['imageUrl'])
+                        @if ($item['hasImage'])
                             <img src="{{ $item['imageUrl'] }}" alt="{{ $item['name'] }}" class="h-full w-full object-cover">
                             <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,48,27,0.02),rgba(22,48,27,0.35))]"></div>
                         @else

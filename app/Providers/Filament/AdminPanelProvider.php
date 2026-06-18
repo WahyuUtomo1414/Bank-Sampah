@@ -49,7 +49,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 BankSampahStatsOverview::class,
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

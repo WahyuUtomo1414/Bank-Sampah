@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Lokasis\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -26,6 +26,8 @@ class LokasiForm
                         Textarea::make('google_maps')
                             ->label('Google Maps')
                             ->rows(5)
+                            ->placeholder('<iframe src="https://www.google.com/maps/embed?pb=..."></iframe>')
+                            ->helperText('Boleh isi full iframe embed Google Maps atau langsung URL embed-nya.')
                             ->columnSpanFull(),
                     ])
                     ->columns(2)

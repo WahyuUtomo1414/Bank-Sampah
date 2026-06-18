@@ -23,7 +23,15 @@
                 @forelse ($articles as $article)
                     <article class="group min-w-[85%] overflow-hidden rounded-[1.75rem] border border-[var(--color-outline-variant)] bg-white shadow-[var(--shadow-soft)] transition-all duration-300 sm:min-w-[24rem] lg:min-w-[26rem]">
                         <div class="relative aspect-[16/10] overflow-hidden bg-[linear-gradient(135deg,rgba(47,125,50,0.18),rgba(139,195,74,0.12))]">
-                            <div class="absolute inset-0 soft-grid opacity-50"></div>
+                            @if ($article['hasImage'])
+                                <img src="{{ $article['imageUrl'] }}" alt="{{ $article['title'] }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,48,27,0.02),rgba(22,48,27,0.32))]"></div>
+                            @else
+                                <div class="flex h-full w-full items-center justify-center">
+                                    <x-common.trash-icon class="size-20 text-[var(--color-primary)]/20" />
+                                </div>
+                            @endif
+                            <div class="absolute inset-0 soft-grid opacity-40"></div>
                             <div class="absolute inset-x-6 bottom-6 rounded-2xl bg-white/88 px-4 py-3 backdrop-blur-sm">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--color-ink-muted)]">{{ $article['date'] }}</p>
                                 <p class="mt-2 text-sm font-semibold text-[var(--color-primary)]">{{ $article['category'] }}</p>

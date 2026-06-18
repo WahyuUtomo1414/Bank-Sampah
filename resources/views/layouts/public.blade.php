@@ -20,13 +20,13 @@
     </head>
     <body class="flex min-h-full flex-col font-sans">
         <div class="relative isolate flex flex-1 flex-col overflow-x-hidden">
-            <x-layout.navbar />
+            <x-layout.navbar :navbar="$layoutData['navbar']" />
 
             <main class="flex-1">
                 @yield('content')
             </main>
 
-            <x-layout.footer />
+            <x-layout.footer :footer="$layoutData['footer']" />
         </div>
     </body>
 </html>

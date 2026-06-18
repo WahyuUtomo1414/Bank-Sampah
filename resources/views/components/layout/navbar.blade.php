@@ -1,3 +1,5 @@
+@props(['navbar'])
+
 <header 
     class="sticky top-0 z-50 border-b border-[var(--color-outline-variant)] bg-white/80 backdrop-blur-xl transition-all duration-300"
     x-data="{ mobileMenuOpen: false }"
@@ -6,28 +8,23 @@
         <div class="flex items-center justify-between py-4">
             <!-- Brand -->
             <a href="{{ route('home') }}" class="group flex items-center gap-3">
-                <div class="flex size-11 items-center justify-center rounded-xl bg-[var(--color-primary)] text-lg font-black text-white transition-transform group-hover:scale-105">
-                    BS
-                </div>
+                @if ($navbar['brand']['logoUrl'])
+                    <div class="flex size-11 items-center justify-center overflow-hidden rounded-xl bg-[var(--color-primary-soft)] transition-transform group-hover:scale-105">
+                        <img src="{{ $navbar['brand']['logoUrl'] }}" alt="{{ $navbar['brand']['name'] }}" class="h-full w-full object-cover">
+                    </div>
+                @else
+                    <div class="flex size-11 items-center justify-center rounded-xl bg-[var(--color-primary)] text-lg font-black text-white transition-transform group-hover:scale-105">
+                        {{ $navbar['brand']['initials'] }}
+                    </div>
+                @endif
                 <div class="hidden sm:block">
-                    <p class="font-display text-base font-bold leading-none text-[var(--color-ink)]">Bank Sampah</p>
-                    <p class="mt-1 text-[11px] font-medium text-[var(--color-ink-muted)]">Hijau, rapi, dan bernilai</p>
+                    <p class="font-display text-base font-bold leading-none text-[var(--color-ink)]">{{ $navbar['brand']['name'] }}</p>
                 </div>
             </a>
 
             <!-- Desktop Nav -->
             <nav class="hidden items-center gap-1 lg:flex">
-                @php
-                    $navItems = [
-                        ['route' => 'home', 'label' => 'Beranda'],
-                        ['route' => 'services', 'label' => 'Layanan'],
-                        ['route' => 'articles', 'label' => 'Artikel'],
-                        ['route' => 'about', 'label' => 'Tentang Kami'],
-                        ['route' => 'contact', 'label' => 'Kontak'],
-                    ];
-                @endphp
-
-                @foreach ($navItems as $item)
+                @foreach ($navbar['navItems'] as $item)
                     <a 
                         href="{{ route($item['route']) }}" 
                         class="relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors {{ request()->routeIs($item['route']) ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-container)] hover:text-[var(--color-ink)]' }}"
@@ -67,7 +64,7 @@
             style="display: none;"
         >
             <div class="panel mb-4 overflow-hidden border-none bg-white/95 p-2 shadow-xl ring-1 ring-black/5">
-                @foreach ($navItems as $item)
+                @foreach ($navbar['navItems'] as $item)
                     <a 
                         href="{{ route($item['route']) }}" 
                         class="block rounded-lg px-4 py-3 text-sm font-bold transition-colors {{ request()->routeIs($item['route']) ? 'bg-[var(--color-surface-container)] text-[var(--color-primary)]' : 'text-[var(--color-ink)] hover:bg-[var(--color-surface-container-low)]' }}"

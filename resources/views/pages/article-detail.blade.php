@@ -57,8 +57,8 @@
             <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12">
                 <article class="rounded-[2rem] border border-[var(--color-outline-variant)] bg-white p-6 shadow-[var(--shadow-soft)] md:p-8 lg:p-10">
                     <div class="space-y-6 text-[var(--color-ink-muted)]">
-                        @foreach (preg_split("/\n\s*\n/", trim($article['content'])) as $paragraph)
-                            <p class="text-base leading-8 md:text-lg">{{ trim($paragraph) }}</p>
+                        @foreach ($article['contentParagraphs'] as $paragraph)
+                            <p class="text-base leading-8 md:text-lg">{{ $paragraph }}</p>
                         @endforeach
                     </div>
                 </article>

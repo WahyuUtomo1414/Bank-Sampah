@@ -22,6 +22,8 @@ class ProfileForm
                         FileUpload::make('logo')
                             ->label('Logo')
                             ->image()
+                            ->disk('public')
+                            ->visibility('public')
                             ->directory('profile'),
                         TextInput::make('nama')
                             ->label('Nama')

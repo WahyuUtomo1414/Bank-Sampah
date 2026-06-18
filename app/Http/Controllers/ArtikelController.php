@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artikel;
-use Illuminate\Support\Str;
+use App\Support\ArticleViewDataBuilder;
 
 class ArtikelController extends Controller
 {
-    public function index()
+    public function index(ArticleViewDataBuilder $articleViewDataBuilder)
     {
         $articles = Artikel::query()
             ->with('kategori')
+            ->where('active', true)
             ->latest('created_at')
             ->get();
 
@@ -18,15 +19,15 @@ class ArtikelController extends Controller
         $articleCards = $articles
             ->skip(1)
             ->values()
-            ->map(fn (Artikel $article) => $this->formatArticleCard($article));
+            ->map(fn (Artikel $article) => $articleViewDataBuilder->toCard($article));
 
-        return view('pages.articles', [
+        return $this->renderPublicPage('pages.articles', [
             'hero' => [
                 'eyebrow' => 'Artikel Edukasi',
                 'title' => 'Wawasan praktis seputar sampah, lingkungan, dan kebiasaan baik warga.',
                 'description' => 'Halaman artikel membantu warga memahami cara memilah sampah, manfaat bank sampah, dan langkah kecil yang berdampak untuk lingkungan sekitar.',
             ],
-            'featuredArticle' => $featuredArticle ? $this->formatArticleCard($featuredArticle) : null,
+            'featuredArticle' => $featuredArticle ? $articleViewDataBuilder->toCard($featuredArticle) : null,
             'categories' => $articles
                 ->pluck('kategori.nama')
                 ->filter()
@@ -36,12 +37,13 @@ class ArtikelController extends Controller
         ]);
     }
 
-    public function show(Artikel $artikel)
+    public function show(Artikel $artikel, ArticleViewDataBuilder $articleViewDataBuilder)
     {
         $article = $artikel->load('kategori');
 
         $relatedArticles = Artikel::query()
             ->with('kategori')
+            ->where('active', true)
             ->whereKeyNot($article->getKey())
             ->when($article->kategori_id, fn ($query) => $query->where('kategori_id', $article->kategori_id))
             ->latest('created_at')
@@ -53,6 +55,7 @@ class ArtikelController extends Controller
                 ->concat(
                     Artikel::query()
                         ->with('kategori')
+                        ->where('active', true)
                         ->whereKeyNot($article->getKey())
                         ->whereNotIn('id', $relatedArticles->pluck('id'))
                         ->latest('created_at')
@@ -62,50 +65,9 @@ class ArtikelController extends Controller
                 ->take(3);
         }
 
-        return view('pages.article-detail', [
-            'article' => [
-                ...$this->formatArticleCard($article),
-                'content' => $article->konten,
-                'image' => $article->foto ?: $article->thumbnail,
-                'imageUrl' => $this->resolveArticleImage($article->foto ?: $article->thumbnail),
-                'hasImage' => filled($article->foto ?: $article->thumbnail),
-            ],
-            'relatedArticles' => $relatedArticles->map(fn (Artikel $related) => $this->formatArticleCard($related)),
+        return $this->renderPublicPage('pages.article-detail', [
+            'article' => $articleViewDataBuilder->toDetail($article),
+            'relatedArticles' => $relatedArticles->map(fn (Artikel $related) => $articleViewDataBuilder->toCard($related)),
         ]);
-    }
-
-    private function formatArticleCard(Artikel $article): array
-    {
-        $minutes = max(1, (int) ceil(str_word_count(strip_tags($article->konten)) / 160));
-        $imagePath = $article->foto ?: $article->thumbnail;
-
-        return [
-            'slug' => $article->slug,
-            'category' => $article->kategori?->nama ?? 'Artikel',
-            'title' => $article->judul,
-            'excerpt' => Str::limit(strip_tags($article->konten), 140),
-            'date' => $article->created_at?->locale('id')->translatedFormat('d F Y') ?? '-',
-            'readTime' => $minutes . ' menit baca',
-            'image' => $imagePath,
-            'imageUrl' => $this->resolveArticleImage($imagePath),
-            'hasImage' => filled($imagePath),
-        ];
-    }
-
-    private function resolveArticleImage(?string $path): string
-    {
-        if (blank($path)) {
-            return null;
-        }
-
-        if (filter_var($path, FILTER_VALIDATE_URL)) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['images/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . ltrim($path, '/'));
     }
 }

@@ -6,7 +6,7 @@ class ServicesController extends Controller
 {
     public function index()
     {
-        return view('pages.services', [
+        return $this->renderPublicPage('pages.services', [
             'hero' => [
                 'eyebrow' => 'Layanan Bank Sampah',
                 'title' => 'Solusi Praktis Kelola Sampah Komunitas.',

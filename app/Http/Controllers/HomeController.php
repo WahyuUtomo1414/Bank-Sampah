@@ -5,18 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Artikel;
 use App\Models\Barang;
 use App\Models\Faq;
-use Illuminate\Support\Str;
+use App\Support\ArticleViewDataBuilder;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(ArticleViewDataBuilder $articleViewDataBuilder)
     {
         $articles = Artikel::query()
             ->with('kategori')
             ->latest('created_at')
             ->limit(6)
             ->get()
-            ->map(fn (Artikel $article) => $this->formatArticleCard($article));
+            ->map(fn (Artikel $article) => $articleViewDataBuilder->toCard($article));
 
         $faqs = Faq::query()
             ->latest('created_at')
@@ -38,10 +38,11 @@ class HomeController extends Controller
                 'description' => $barang->deskripsi ?: 'Material yang dapat dipilah dan disetor dalam kondisi bersih serta kering.',
                 'price' => $barang->harga ? 'Rp' . number_format((float) $barang->harga, 0, ',', '.') : null,
                 'unit' => $barang->unit?->nama,
-                'imageUrl' => $this->resolveBarangImage($barang->foto),
+                'imageUrl' => $barang->getPhotoUrl(),
+                'hasImage' => $barang->hasPhoto(),
             ]);
 
-        return view('pages.home', [
+        return $this->renderPublicPage('pages.home', [
             'hero' => [
                 'eyebrow' => 'Solusi Cerdas Pengelolaan Sampah',
                 'title' => 'Ubah Sampah Menjadi Cuan.',
@@ -87,57 +88,5 @@ class HomeController extends Controller
             'articles' => $articles,
             'faqs' => $faqs,
         ]);
-    }
-
-    private function formatArticleCard(Artikel $article): array
-    {
-        $minutes = max(1, (int) ceil(str_word_count(strip_tags($article->konten)) / 160));
-        $imagePath = $article->foto ?: $article->thumbnail;
-
-        return [
-            'slug' => $article->slug,
-            'category' => $article->kategori?->nama ?? 'Artikel',
-            'title' => $article->judul,
-            'excerpt' => Str::limit(strip_tags($article->konten), 120),
-            'date' => $article->created_at?->locale('id')->translatedFormat('d F Y') ?? '-',
-            'readTime' => $minutes . ' menit baca',
-            'image' => $imagePath,
-            'imageUrl' => $this->resolveArticleImage($imagePath),
-            'hasImage' => filled($imagePath),
-        ];
-    }
-
-    private function resolveArticleImage(?string $path): string
-    {
-        if (blank($path)) {
-            return null;
-        }
-
-        if (filter_var($path, FILTER_VALIDATE_URL)) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['images/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . ltrim($path, '/'));
-    }
-
-    private function resolveBarangImage(?string $path): string
-    {
-        if (blank($path)) {
-            return null;
-        }
-
-        if (filter_var($path, FILTER_VALIDATE_URL)) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['images/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . ltrim($path, '/'));
     }
 }

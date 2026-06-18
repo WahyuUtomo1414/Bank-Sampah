@@ -51,6 +51,8 @@ class BarangForm
                         FileUpload::make('foto')
                             ->label('Foto')
                             ->image()
+                            ->disk('public')
+                            ->visibility('public')
                             ->directory('barang'),
                         Textarea::make('deskripsi')
                             ->label('Deskripsi')

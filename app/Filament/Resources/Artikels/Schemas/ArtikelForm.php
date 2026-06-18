@@ -41,11 +41,15 @@ class ArtikelForm
                         FileUpload::make('thumbnail')
                             ->label('Thumbnail')
                             ->image()
+                            ->disk('public')
+                            ->visibility('public')
                             ->directory('artikel'),
-                        FileUpload::make('foto')
-                            ->label('Foto')
-                            ->image()
-                            ->directory('artikel'),
+                        // FileUpload::make('foto')
+                        //     ->label('Foto')
+                        //     ->image()
+                        //     ->disk('public')
+                        //     ->visibility('public')
+                        //     ->directory('artikel'),
                         Textarea::make('konten')
                             ->label('Konten')
                             ->required()
