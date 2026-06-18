@@ -5,7 +5,9 @@ namespace App\Filament\Resources\SetorHeaders;
 use App\Filament\Resources\SetorHeaders\Pages\CreateSetorHeader;
 use App\Filament\Resources\SetorHeaders\Pages\EditSetorHeader;
 use App\Filament\Resources\SetorHeaders\Pages\ListSetorHeaders;
+use App\Filament\Resources\SetorHeaders\Pages\ViewSetorHeader;
 use App\Filament\Resources\SetorHeaders\Schemas\SetorHeaderForm;
+use App\Filament\Resources\SetorHeaders\Schemas\SetorHeaderInfolist;
 use App\Filament\Resources\SetorHeaders\Tables\SetorHeadersTable;
 use App\Models\SetorHeader;
 use BackedEnum;
@@ -37,6 +39,11 @@ class SetorHeaderResource extends Resource
         return SetorHeaderForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return SetorHeaderInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return SetorHeadersTable::configure($table);
@@ -54,6 +61,7 @@ class SetorHeaderResource extends Resource
         return [
             'index' => ListSetorHeaders::route('/'),
             'create' => CreateSetorHeader::route('/create'),
+            'view' => ViewSetorHeader::route('/{record}'),
             'edit' => EditSetorHeader::route('/{record}/edit'),
         ];
     }
@@ -61,6 +69,10 @@ class SetorHeaderResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->with([
+                'warga',
+                'detail.barang',
+            ])
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

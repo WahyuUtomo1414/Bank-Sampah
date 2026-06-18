@@ -12,7 +12,7 @@ class BukuTransaksiSynchronizer
     {
         $this->upsert(
             refId: $setorHeader->getKey(),
-            refType: 'setor_header',
+            refType: BukuTransaksi::REF_TYPE_SETOR_HEADER,
             attributes: [
                 'tanggal_transaksi' => $setorHeader->tanggal_transaksi,
                 'warga_id' => $setorHeader->warga_id,
@@ -27,7 +27,7 @@ class BukuTransaksiSynchronizer
     {
         $this->upsert(
             refId: $tarikSaldo->getKey(),
-            refType: 'tarik_saldo',
+            refType: BukuTransaksi::REF_TYPE_TARIK_SALDO,
             attributes: [
                 'tanggal_transaksi' => $tarikSaldo->tanggal_transaksi,
                 'warga_id' => $tarikSaldo->warga_id,
@@ -40,22 +40,22 @@ class BukuTransaksiSynchronizer
 
     public function deleteForSetorHeader(SetorHeader $setorHeader, bool $force = false): void
     {
-        $this->deleteByReference($setorHeader->getKey(), 'setor_header', $force);
+        $this->deleteByReference($setorHeader->getKey(), BukuTransaksi::REF_TYPE_SETOR_HEADER, $force);
     }
 
     public function deleteForTarikSaldo(TarikSaldo $tarikSaldo, bool $force = false): void
     {
-        $this->deleteByReference($tarikSaldo->getKey(), 'tarik_saldo', $force);
+        $this->deleteByReference($tarikSaldo->getKey(), BukuTransaksi::REF_TYPE_TARIK_SALDO, $force);
     }
 
     public function restoreForSetorHeader(SetorHeader $setorHeader): void
     {
-        $this->restoreByReference($setorHeader->getKey(), 'setor_header');
+        $this->restoreByReference($setorHeader->getKey(), BukuTransaksi::REF_TYPE_SETOR_HEADER);
     }
 
     public function restoreForTarikSaldo(TarikSaldo $tarikSaldo): void
     {
-        $this->restoreByReference($tarikSaldo->getKey(), 'tarik_saldo');
+        $this->restoreByReference($tarikSaldo->getKey(), BukuTransaksi::REF_TYPE_TARIK_SALDO);
     }
 
     protected function upsert(int $refId, string $refType, array $attributes): void

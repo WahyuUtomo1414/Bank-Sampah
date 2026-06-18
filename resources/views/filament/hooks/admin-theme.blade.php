@@ -38,6 +38,13 @@
         border-bottom-color: rgba(255, 255, 255, 0.08) !important;
     }
 
+    .fi-sidebar-header,
+    .fi-sidebar-header a,
+    .fi-sidebar-header span,
+    .fi-sidebar-header .fi-logo {
+        color: #ffffff !important;
+    }
+
     .fi-sidebar-group-label,
     .fi-sidebar-item-label,
     .fi-sidebar-item-btn,

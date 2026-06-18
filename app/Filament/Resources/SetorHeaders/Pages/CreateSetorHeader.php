@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SetorHeaders\Pages;
 
 use App\Filament\Resources\SetorHeaders\SetorHeaderResource;
+use App\Filament\Resources\SetorHeaders\Schemas\SetorHeaderForm;
 use App\Models\SetorHeader;
 use App\Support\BukuTransaksiSynchronizer;
 use Filament\Resources\Pages\CreateRecord;
@@ -14,14 +15,22 @@ class CreateSetorHeader extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['kode'] = $this->generateKodeTransaksi();
-        $data['total_harga'] = collect($data['detail'] ?? [])
-            ->sum(fn (array $item) => (float) ($item['subtotal'] ?? 0));
+        $data['detail'] = SetorHeaderForm::normalizeItems($data['detail'] ?? []);
+        $data['total_harga'] = SetorHeaderForm::calculateTotal($data['detail']);
 
         return $data;
     }
 
     protected function afterCreate(): void
     {
+        $totalHarga = (float) $this->getRecord()
+            ->detail()
+            ->sum('subtotal');
+
+        $this->getRecord()->forceFill([
+            'total_harga' => $totalHarga,
+        ])->saveQuietly();
+
         app(BukuTransaksiSynchronizer::class)
             ->syncForSetorHeader($this->getRecord());
     }

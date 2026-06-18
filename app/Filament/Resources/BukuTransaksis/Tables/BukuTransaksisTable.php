@@ -3,13 +3,10 @@
 namespace App\Filament\Resources\BukuTransaksis\Tables;
 
 use App\Filament\Support\AuditTableColumns;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
+use App\Models\BukuTransaksi;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -25,6 +22,9 @@ class BukuTransaksisTable
                     ->sortable(),
                 TextColumn::make('ref_type')
                     ->label('Tipe Ref')
+                    ->badge()
+                    ->color(fn (string $state): string => $state === BukuTransaksi::REF_TYPE_SETOR_HEADER ? 'success' : 'warning')
+                    ->formatStateUsing(fn (string $state): string => BukuTransaksi::getRefTypeOptions()[$state] ?? $state)
                     ->searchable(),
                 TextColumn::make('tanggal_transaksi')
                     ->label('Tanggal Transaksi')
@@ -58,17 +58,12 @@ class BukuTransaksisTable
                 ...AuditTableColumns::make(),
             ])
             ->filters([
+                SelectFilter::make('ref_type')
+                    ->label('Tipe Referensi')
+                    ->options(BukuTransaksi::getRefTypeOptions()),
                 TrashedFilter::make(),
             ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                ]),
-            ]);
+            ->recordActions([])
+            ->toolbarActions([]);
     }
 }

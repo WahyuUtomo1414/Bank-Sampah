@@ -3,11 +3,25 @@
 namespace App\Traits;
 
 use App\Models\User;
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 trait AuditedBySoftDelete
 {
     protected static function resolveAuditUserId(): int
     {
+        $filamentUserId = Filament::auth()->id();
+
+        if ($filamentUserId) {
+            return (int) $filamentUserId;
+        }
+
+        $authUserId = Auth::id();
+
+        if ($authUserId) {
+            return (int) $authUserId;
+        }
+
         return 1;
     }
 

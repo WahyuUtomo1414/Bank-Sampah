@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SetorHeaders\Schemas;
 
 use App\Models\Barang;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -41,7 +42,7 @@ class SetorHeaderForm
                         TextInput::make('total_harga')
                             ->label('Total Harga')
                             ->readOnly()
-                            ->dehydrated()
+                            ->dehydrated(false)
                             ->numeric()
                             ->minValue(0)
                             ->default(0)
@@ -61,7 +62,15 @@ class SetorHeaderForm
                             ->relationship()
                             ->minItems(1)
                             ->live()
+                            ->afterStateHydrated(function (Repeater $component, Set $set): void {
+                                $items = self::normalizeItems($component->getState() ?? []);
+
+                                $component->state($items);
+                                self::syncGrandTotal($set, $items);
+                            })
                             ->afterStateUpdated(fn ($state, Set $set) => self::syncGrandTotal($set, $state))
+                            ->mutateRelationshipDataBeforeCreateUsing(fn (array $data): array => self::normalizeItem($data))
+                            ->mutateRelationshipDataBeforeSaveUsing(fn (array $data): array => self::normalizeItem($data))
                             ->schema([
                                 Select::make('barang_id')
                                     ->label('Barang')
@@ -72,8 +81,7 @@ class SetorHeaderForm
                                     ->required()
                                     ->live()
                                     ->afterStateUpdated(function (Get $get, Set $set) {
-                                        self::syncItemSubtotal($get, $set);
-                                        self::syncGrandTotalFromItems($get, $set);
+                                        self::syncItemState($get, $set);
                                     }),
                                 TextInput::make('jumlah')
                                     ->label('Jumlah')
@@ -83,8 +91,7 @@ class SetorHeaderForm
                                     ->default(1)
                                     ->live()
                                     ->afterStateUpdated(function (Get $get, Set $set) {
-                                        self::syncItemSubtotal($get, $set);
-                                        self::syncGrandTotalFromItems($get, $set);
+                                        self::syncItemState($get, $set);
                                     }),
                                 TextInput::make('subtotal')
                                     ->label('Subtotal')
@@ -97,33 +104,65 @@ class SetorHeaderForm
                             ])
                             ->columns(3)
                             ->columnSpanFull()
-                            ->deleteAction(fn ($state, Set $set, Get $get) => self::syncGrandTotalFromItems($get, $set)),
+                            ->deleteAction(fn (Action $action) => $action->after(
+                                fn (Repeater $component, Set $set) => self::syncGrandTotal($set, $component->getState())
+                            )),
                     ])
                     ->columnSpanFull(),
             ]);
     }
 
-    protected static function syncItemSubtotal(Get $get, Set $set): void
+    public static function normalizeItems(array $items): array
     {
-        $harga = (float) (Barang::query()->find($get('barang_id'))?->harga ?? 0);
-        $jumlah = (float) ($get('jumlah') ?? 0);
-
-        $set('subtotal', $harga * $jumlah);
+        return array_map(fn (array $item): array => self::normalizeItem($item), $items);
     }
 
-    protected static function syncGrandTotalFromItems(Get $get, Set $set): void
+    public static function normalizeItem(array $item): array
     {
-        $total = collect($get('../../detail') ?? [])
-            ->sum(fn ($item) => (float) ($item['subtotal'] ?? 0));
+        $jumlah = max(1, (int) ($item['jumlah'] ?? 0));
+        $subtotal = self::calculateSubtotal(
+            barangId: $item['barang_id'] ?? null,
+            jumlah: $jumlah,
+        );
 
-        $set('../../total_harga', $total);
+        $item['jumlah'] = $jumlah;
+        $item['subtotal'] = $subtotal;
+
+        return $item;
+    }
+
+    public static function calculateTotal(array $items): float
+    {
+        return collect(self::normalizeItems($items))
+            ->sum(fn (array $item): float => (float) ($item['subtotal'] ?? 0));
+    }
+
+    protected static function syncItemState(Get $get, Set $set): void
+    {
+        $jumlah = max(1, (int) ($get('jumlah') ?? 0));
+        $subtotal = self::calculateSubtotal(
+            barangId: $get('barang_id'),
+            jumlah: $jumlah,
+        );
+
+        $set('jumlah', $jumlah);
+        $set('subtotal', $subtotal);
+        $set('../../total_harga', self::calculateTotal($get('../../detail') ?? []));
     }
 
     protected static function syncGrandTotal(Set $set, mixed $state): void
     {
-        $total = collect($state ?? [])
-            ->sum(fn ($item) => (float) ($item['subtotal'] ?? 0));
+        $set('total_harga', self::calculateTotal($state ?? []));
+    }
 
-        $set('total_harga', $total);
+    protected static function calculateSubtotal(int|string|null $barangId, int $jumlah): float
+    {
+        if (blank($barangId)) {
+            return 0;
+        }
+
+        $harga = (float) (Barang::query()->find($barangId)?->harga ?? 0);
+
+        return $harga * $jumlah;
     }
 }

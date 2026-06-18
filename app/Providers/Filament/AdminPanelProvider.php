@@ -31,6 +31,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('Bank Sampah')
+            ->brandLogo(asset('images/logo.jpg'))
+            ->darkModeBrandLogo(asset('images/logo.jpg'))
+            ->brandLogoHeight('3rem')
             ->colors([
                 'primary' => Color::Green,
             ])
@@ -43,7 +46,6 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 BankSampahStatsOverview::class,
                 AccountWidget::class,

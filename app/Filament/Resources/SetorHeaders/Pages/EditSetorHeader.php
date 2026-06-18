@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SetorHeaders\Pages;
 
 use App\Filament\Resources\SetorHeaders\SetorHeaderResource;
+use App\Filament\Resources\SetorHeaders\Schemas\SetorHeaderForm;
 use App\Support\BukuTransaksiSynchronizer;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
@@ -15,14 +16,22 @@ class EditSetorHeader extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data['total_harga'] = collect($data['detail'] ?? [])
-            ->sum(fn (array $item) => (float) ($item['subtotal'] ?? 0));
+        $data['detail'] = SetorHeaderForm::normalizeItems($data['detail'] ?? []);
+        $data['total_harga'] = SetorHeaderForm::calculateTotal($data['detail']);
 
         return $data;
     }
 
     protected function afterSave(): void
     {
+        $totalHarga = (float) $this->getRecord()
+            ->detail()
+            ->sum('subtotal');
+
+        $this->getRecord()->forceFill([
+            'total_harga' => $totalHarga,
+        ])->saveQuietly();
+
         app(BukuTransaksiSynchronizer::class)
             ->syncForSetorHeader($this->getRecord());
     }
